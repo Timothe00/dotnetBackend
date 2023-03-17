@@ -1,0 +1,11 @@
+Backend.bussiness.webApi/bin
+Backend.bussiness.webApi/obj
+
+Backend.business.Logic/bin
+Backend.business.Logic/obj
+
+Backend.business.DataAccess/bin
+Backend.business.DataAccess/obj
+
+.vscode
+.vs
