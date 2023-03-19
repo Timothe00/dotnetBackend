@@ -19,6 +19,7 @@ namespace Backend.business.DataAccess.Data
         public virtual DbSet<Student>? Students { get; set; }
         public virtual DbSet<Teacher>? Teachers { get; set; }
 
+        public virtual DbSet<MatterTeacher> MatterTeachers  { get; set; }
 
         public ManagementPresenceDbContext()
         {
@@ -63,6 +64,35 @@ namespace Backend.business.DataAccess.Data
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Cascade);
             });
+
+
+            modelBuilder.Entity<SessionCours>(o =>
+            {
+                o.HasKey(s => s.SessionCoursId);
+                o.HasOne(m => m.MatterTeacher)
+                    .WithMany(s => s.SessionCours)
+                    .HasForeignKey(e => e.MatterTeacherId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Cascade);
+                    
+            });
+
+            modelBuilder.Entity<MatterTeacher>(o =>
+            {
+                o.HasKey(s => s.MatterTeacherId);
+                o.HasOne(m => m.Matters)
+                    .WithMany(s => s.MatterTeachers)
+                    .HasForeignKey(e => e.MatterId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Cascade);
+                    
+                o.HasOne(m => m.Teachers)
+                    .WithMany(s => s.MatterTeachers)
+                    .HasForeignKey(e => e.TeacherId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
 
 
             modelBuilder.Entity<Matters>(

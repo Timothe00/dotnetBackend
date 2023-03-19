@@ -6,8 +6,6 @@ namespace Backend.business.DataAccess.Models
     {
         public int MatterId { get; set; }
         public string? MatterName { get; set; }
-
-        public int SessionCoursId { get; set; }
-        public ICollection<SessionCours>? SessionCours { get; set; }    
+        public ICollection<MatterTeacher>? MatterTeachers { get; set; }    
     }
 }

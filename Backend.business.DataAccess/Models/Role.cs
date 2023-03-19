@@ -10,8 +10,6 @@ namespace Backend.business.DataAccess.Models
     {
         public int RoleId { get; set; }
         public string? RoleName { get; set; }
-
-        public int? UserId { get; set; }
         public ICollection<Users>? Users { get; set; }
     }
 }

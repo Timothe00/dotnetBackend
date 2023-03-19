@@ -11,8 +11,6 @@ namespace Backend.business.DataAccess.Models
     [Table("Teacher")]
     public class Teacher : Users
     {
-
-        public int SessionCoursId { get; set; }
-        public ICollection<SessionCours>? SessionCours { get; set; }
+        public ICollection<MatterTeacher>? MatterTeachers { get; set; } 
     }
 }

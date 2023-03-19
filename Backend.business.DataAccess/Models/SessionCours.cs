@@ -15,11 +15,8 @@ namespace Backend.business.DataAccess.Models
         public DateTime DateEnd { get; set; }
         public string? HourStart { get; set; }
         public string? HourEnd { get; set; }
-        public int AbsenceId { get; set; }
         public ICollection<Absence>? Absences { get; set; }
-        public int TeacherId { get; set; }
-        public Teacher? Teacher { get; set; }
-        public int MatterId { get; set; }
-        public Matters? Matters { get; set; }
+        public int MatterTeacherId {get; set;}
+        public MatterTeacher? MatterTeacher {get; set;}
     }
 }
