@@ -1,6 +1,7 @@
 ﻿using Backend.business.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Net;
 using static System.Formats.Asn1.AsnWriter;
 
 
@@ -8,7 +9,7 @@ namespace Backend.business.DataAccess.Data
 {
 
 
-    public class ManagementPresenceDbContext : DbContext
+    public class presenceManagementDbContext : DbContext
     {
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<Absence>? Absences { get; set; }
@@ -18,15 +19,15 @@ namespace Backend.business.DataAccess.Data
         public virtual DbSet<SessionCours>? SessionCours { get; set; }
         public virtual DbSet<Student>? Students { get; set; }
         public virtual DbSet<Teacher>? Teachers { get; set; }
-
+        public virtual DbSet<justificationAbsence> justificationAbsences { get; set; }
         public virtual DbSet<MatterTeacher> MatterTeachers  { get; set; }
 
-        public ManagementPresenceDbContext()
+        public presenceManagementDbContext()
         {
 
         }
 
-        public ManagementPresenceDbContext(DbContextOptions<DbContext> options) : base(options)
+        public presenceManagementDbContext(DbContextOptions<DbContext> options) : base(options)
         {
 
         }
@@ -49,9 +50,9 @@ namespace Backend.business.DataAccess.Data
             modelBuilder.Entity<Teacher>().ToTable("Teacher");
             modelBuilder.Entity<Admin>().ToTable("Admin");
 
-            modelBuilder.Entity<Student>();
-            modelBuilder.Entity<Teacher>();
-            modelBuilder.Entity<Admin>();
+            modelBuilder.Entity<Student>(s => { });
+            modelBuilder.Entity<Teacher>(t => { });
+            modelBuilder.Entity<Admin>(a => { });
 
 
 
@@ -63,6 +64,18 @@ namespace Backend.business.DataAccess.Data
                     .HasForeignKey(e => e.RoleId)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Cascade);
+            });
+
+
+            modelBuilder.Entity<Role>(o =>
+            {
+                o.HasKey(r => r.RoleId);
+            });
+
+
+            modelBuilder.Entity<Matters>(o =>
+            {
+                o.HasKey(m => m.MatterId);
             });
 
 
@@ -93,32 +106,52 @@ namespace Backend.business.DataAccess.Data
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
+            modelBuilder.Entity<Permission>(o =>
+            {
+                o.HasKey(pe => pe.PermissionId);
+                o.HasOne(p => p.Student)
+                    .WithMany(p => p.Permissions)
+                    .HasForeignKey(e => e.StudentId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
 
-            modelBuilder.Entity<Matters>(
-              entity =>
-              {
-                  entity.HasKey(m => m.MatterId);
-              }
-           );
+            modelBuilder.Entity<Absence>(o =>
+            {
+                o.HasKey(ps => ps.AbsenceId);
 
-        //    modelBuilder.Entity<Absence>(o =>
-        //    { 
-        //      o.HasKey(a => a.AbsenceId);
-        //      o.HasOne(r => r.Role)
-        //         .WithMany(u => u.Users)
-        //         .HasForeignKey(e => e.RoleId)
-        //         .IsRequired()
-        //         .OnDelete(DeleteBehavior.Cascade);
-        //   });
+                o.HasOne(p => p.Student)
+                    .WithMany(p => p.Absences)
+                    .HasForeignKey(e => e.StudentId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                o.HasOne(p => p.SessionCours)
+                    .WithMany(p => p.Absences)
+                    .HasForeignKey(e => e.SessionCoursId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
 
-          modelBuilder.Entity<SessionCours>(
-             entity =>
-             {
-                 entity.HasKey(property => property.SessionCoursId);
-             }
-          );
+            modelBuilder.Entity<justificationAbsence>(o =>
+            {
+                o.HasKey(pe => pe.JustificationId);
+
+                o.HasOne(p => p.Students)
+                    .WithMany(p => p.justificationAbsence)
+                    .HasForeignKey(e => e.StudentId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+
+            modelBuilder.Entity<Absence>()
+                .HasOne(a => a.JustificationAbsence)
+                .WithOne(jus => jus.Absence)
+                .HasForeignKey<justificationAbsence>(a => a.AbsenceId);
+
 
         }
 

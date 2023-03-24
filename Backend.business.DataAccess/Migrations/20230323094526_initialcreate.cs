@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Backend.business.DataAccess.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class initialcreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -95,8 +95,7 @@ namespace Backend.business.DataAccess.Migrations
                 name: "Teacher",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    IdSessionCours = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -115,16 +114,46 @@ namespace Backend.business.DataAccess.Migrations
                     PermissionId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PermissionReason = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StudentUserId = table.Column<int>(type: "int", nullable: true)
+                    PermissionBeginAt = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PermissionEndAt = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PermissionStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StudentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Permission", x => x.PermissionId);
                     table.ForeignKey(
-                        name: "FK_Permission_Student_StudentUserId",
-                        column: x => x.StudentUserId,
+                        name: "FK_Permission_Student_StudentId",
+                        column: x => x.StudentId,
                         principalTable: "Student",
-                        principalColumn: "UserId");
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MatterTeachers",
+                columns: table => new
+                {
+                    MatterTeacherId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TeacherId = table.Column<int>(type: "int", nullable: false),
+                    MatterId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MatterTeachers", x => x.MatterTeacherId);
+                    table.ForeignKey(
+                        name: "FK_MatterTeachers_Matters_MatterId",
+                        column: x => x.MatterId,
+                        principalTable: "Matters",
+                        principalColumn: "MatterId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MatterTeachers_Teacher_TeacherId",
+                        column: x => x.TeacherId,
+                        principalTable: "Teacher",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -133,29 +162,24 @@ namespace Backend.business.DataAccess.Migrations
                 {
                     SessionCoursId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MatterId = table.Column<int>(type: "int", nullable: false),
-                    TeacherId = table.Column<int>(type: "int", nullable: false),
                     Semestre = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Years = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateStart = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateEnd = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MatterId = table.Column<int>(type: "int", nullable: false),
+                    TeacherId = table.Column<int>(type: "int", nullable: false),
                     HourStart = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HourEnd = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MattersMatterId = table.Column<int>(type: "int", nullable: true)
+                    MatterTeacherId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SessionCours", x => x.SessionCoursId);
                     table.ForeignKey(
-                        name: "FK_SessionCours_Matters_MattersMatterId",
-                        column: x => x.MattersMatterId,
-                        principalTable: "Matters",
-                        principalColumn: "MatterId");
-                    table.ForeignKey(
-                        name: "FK_SessionCours_Teacher_TeacherId",
-                        column: x => x.TeacherId,
-                        principalTable: "Teacher",
-                        principalColumn: "UserId",
+                        name: "FK_SessionCours_MatterTeachers_MatterTeacherId",
+                        column: x => x.MatterTeacherId,
+                        principalTable: "MatterTeachers",
+                        principalColumn: "MatterTeacherId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -165,15 +189,9 @@ namespace Backend.business.DataAccess.Migrations
                 {
                     AbsenceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IdSession = table.Column<int>(type: "int", nullable: false),
-                    HourArrived = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    HourDeparture = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AbsenceReason = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdStudent = table.Column<int>(type: "int", nullable: false),
-                    StudentUserId = table.Column<int>(type: "int", nullable: true),
-                    IdSessionCours = table.Column<int>(type: "int", nullable: true),
-                    SessionCoursId = table.Column<int>(type: "int", nullable: true)
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: false),
+                    SessionCoursId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -182,12 +200,40 @@ namespace Backend.business.DataAccess.Migrations
                         name: "FK_Absences_SessionCours_SessionCoursId",
                         column: x => x.SessionCoursId,
                         principalTable: "SessionCours",
-                        principalColumn: "SessionCoursId");
+                        principalColumn: "SessionCoursId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Absences_Student_StudentUserId",
-                        column: x => x.StudentUserId,
+                        name: "FK_Absences_Student_StudentId",
+                        column: x => x.StudentId,
                         principalTable: "Student",
-                        principalColumn: "UserId");
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "justificationAbsences",
+                columns: table => new
+                {
+                    JustificationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    JustificationEdit = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AbsenceId = table.Column<int>(type: "int", nullable: true),
+                    StudentId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_justificationAbsences", x => x.JustificationId);
+                    table.ForeignKey(
+                        name: "FK_justificationAbsences_Absences_AbsenceId",
+                        column: x => x.AbsenceId,
+                        principalTable: "Absences",
+                        principalColumn: "AbsenceId");
+                    table.ForeignKey(
+                        name: "FK_justificationAbsences_Student_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Student",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -196,24 +242,41 @@ namespace Backend.business.DataAccess.Migrations
                 column: "SessionCoursId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Absences_StudentUserId",
+                name: "IX_Absences_StudentId",
                 table: "Absences",
-                column: "StudentUserId");
+                column: "StudentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Permission_StudentUserId",
-                table: "Permission",
-                column: "StudentUserId");
+                name: "IX_justificationAbsences_AbsenceId",
+                table: "justificationAbsences",
+                column: "AbsenceId",
+                unique: true,
+                filter: "[AbsenceId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SessionCours_MattersMatterId",
-                table: "SessionCours",
-                column: "MattersMatterId");
+                name: "IX_justificationAbsences_StudentId",
+                table: "justificationAbsences",
+                column: "StudentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SessionCours_TeacherId",
-                table: "SessionCours",
+                name: "IX_MatterTeachers_MatterId",
+                table: "MatterTeachers",
+                column: "MatterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MatterTeachers_TeacherId",
+                table: "MatterTeachers",
                 column: "TeacherId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Permission_StudentId",
+                table: "Permission",
+                column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SessionCours_MatterTeacherId",
+                table: "SessionCours",
+                column: "MatterTeacherId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
@@ -224,19 +287,25 @@ namespace Backend.business.DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Absences");
-
-            migrationBuilder.DropTable(
                 name: "Admin");
 
             migrationBuilder.DropTable(
+                name: "justificationAbsences");
+
+            migrationBuilder.DropTable(
                 name: "Permission");
+
+            migrationBuilder.DropTable(
+                name: "Absences");
 
             migrationBuilder.DropTable(
                 name: "SessionCours");
 
             migrationBuilder.DropTable(
                 name: "Student");
+
+            migrationBuilder.DropTable(
+                name: "MatterTeachers");
 
             migrationBuilder.DropTable(
                 name: "Matters");

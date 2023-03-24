@@ -1,7 +1,7 @@
 ﻿using Backend.business.DataAccess.Data;
 using Backend.business.DataAccess.Models;
 using Backend.business.Logic.ModelsImage;
-using Backend.business.Logic.Services.UsersServices;
+using Backend.business.Logic.Services.MatersServices;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,16 +13,16 @@ namespace Backend.business.webApi.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class MattersController : ControllerBase
     {
 
         private readonly presenceManagementDbContext presenceManagementDbContext;
-        private UsersService UsersServices;
+        private MatersService MatersService;
 
-        public UsersController(presenceManagementDbContext? dbContext, UsersService usersService)
+        public MattersController(presenceManagementDbContext? dbContext, MatersService matersService)
         {
             presenceManagementDbContext = dbContext;
-            UsersServices = usersService;
+            MatersService = matersService;
         }
 
 
@@ -31,43 +31,43 @@ namespace Backend.business.webApi.Controllers
 
         public async Task<IActionResult> GetAsync()
         {
-            var users = await UsersServices.GetAllUsersAsync();
-            return Ok(users);
+            var m = await MatersService.GetMattersAsync();
+            return Ok(m);
         }
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-       public async Task<IActionResult> GetUserByIdAsync(int id)
+       public async Task<IActionResult> GetMatterByIdAsync(int id)
         {
-            var user = await UsersServices.GetUserByIdAsync(id);
+            var mat = await MatersService.GetMatterIdAsync(id);
 
-            if (user == null)
+            if (mat == null)
             {
                 return NotFound();
             }
 
-            return Ok(user);
+            return Ok(mat);
 
         }
 
         // POST api/<UsersController>
         [HttpPost]
-        public IActionResult Post([FromBody] ImagePost user)
+        public IActionResult Post([FromBody] MattersImage matter)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("error update");
+                return BadRequest("error create");
             }
             else
             {
-                return Ok(UsersServices.CreateUserAsync(user));
+                return Ok(MatersService.CreateMatterAsync(matter));
             }
 
         }
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] ImagePost Xuser)
+        public IActionResult Put(int id, [FromBody] MattersImage matter)
         {
             if (!ModelState.IsValid)
             {
@@ -75,15 +75,17 @@ namespace Backend.business.webApi.Controllers
             }
             else
             {
-                return Ok(UsersServices.UpdateUserAsync(Xuser));
+                return Ok(MatersService.UpdateMatterAsync(matter));
             }
         }
+
+
 
         // DELETE api/<UsersController>/5
         [HttpDelete("{id}")]
         public Task<bool> Delete(int id)
         {
-            return UsersServices.DeleteUserAsync(id);
+            return MatersService.DeleteMatterAsync(id);
         }
     }
 }

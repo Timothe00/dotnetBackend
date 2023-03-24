@@ -11,9 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Backend.business.DataAccess.Migrations
 {
-    [DbContext(typeof(ManagementPresenceDbContext))]
-    [Migration("20230316104924_InitialCreate")]
-    partial class InitialCreate
+    [DbContext(typeof(presenceManagementDbContext))]
+    [Migration("20230323094526_initialcreate")]
+    partial class initialcreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,40 +32,50 @@ namespace Backend.business.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AbsenceId"), 1L, 1);
 
-                    b.Property<string>("AbsenceReason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("HourArrived")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("HourDeparture")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdSession")
+                    b.Property<int>("SessionCoursId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdSessionCours")
-                        .HasColumnType("int");
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("IdStudent")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SessionCoursId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("StudentUserId")
+                    b.Property<int>("StudentId")
                         .HasColumnType("int");
 
                     b.HasKey("AbsenceId");
 
                     b.HasIndex("SessionCoursId");
 
-                    b.HasIndex("StudentUserId");
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Absences");
+                });
+
+            modelBuilder.Entity("Backend.business.DataAccess.Models.justificationAbsence", b =>
+                {
+                    b.Property<int>("JustificationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("JustificationId"), 1L, 1);
+
+                    b.Property<int?>("AbsenceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("JustificationEdit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("JustificationId");
+
+                    b.HasIndex("AbsenceId")
+                        .IsUnique()
+                        .HasFilter("[AbsenceId] IS NOT NULL");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("justificationAbsences");
                 });
 
             modelBuilder.Entity("Backend.business.DataAccess.Models.Matters", b =>
@@ -84,6 +94,29 @@ namespace Backend.business.DataAccess.Migrations
                     b.ToTable("Matters");
                 });
 
+            modelBuilder.Entity("Backend.business.DataAccess.Models.MatterTeacher", b =>
+                {
+                    b.Property<int>("MatterTeacherId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MatterTeacherId"), 1L, 1);
+
+                    b.Property<int>("MatterId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MatterTeacherId");
+
+                    b.HasIndex("MatterId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("MatterTeachers");
+                });
+
             modelBuilder.Entity("Backend.business.DataAccess.Models.Permission", b =>
                 {
                     b.Property<int>("PermissionId")
@@ -92,15 +125,24 @@ namespace Backend.business.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PermissionId"), 1L, 1);
 
+                    b.Property<string>("PermissionBeginAt")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PermissionEndAt")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PermissionReason")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StudentUserId")
+                    b.Property<string>("PermissionStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentId")
                         .HasColumnType("int");
 
                     b.HasKey("PermissionId");
 
-                    b.HasIndex("StudentUserId");
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Permission");
                 });
@@ -144,7 +186,7 @@ namespace Backend.business.DataAccess.Migrations
                     b.Property<int>("MatterId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MattersMatterId")
+                    b.Property<int>("MatterTeacherId")
                         .HasColumnType("int");
 
                     b.Property<string>("Semestre")
@@ -158,9 +200,7 @@ namespace Backend.business.DataAccess.Migrations
 
                     b.HasKey("SessionCoursId");
 
-                    b.HasIndex("MattersMatterId");
-
-                    b.HasIndex("TeacherId");
+                    b.HasIndex("MatterTeacherId");
 
                     b.ToTable("SessionCours");
                 });
@@ -216,9 +256,6 @@ namespace Backend.business.DataAccess.Migrations
                 {
                     b.HasBaseType("Backend.business.DataAccess.Models.Users");
 
-                    b.Property<int>("IdSessionCours")
-                        .HasColumnType("int");
-
                     b.ToTable("Teacher", (string)null);
                 });
 
@@ -226,41 +263,77 @@ namespace Backend.business.DataAccess.Migrations
                 {
                     b.HasOne("Backend.business.DataAccess.Models.SessionCours", "SessionCours")
                         .WithMany("Absences")
-                        .HasForeignKey("SessionCoursId");
+                        .HasForeignKey("SessionCoursId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Backend.business.DataAccess.Models.Student", "Student")
                         .WithMany("Absences")
-                        .HasForeignKey("StudentUserId");
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("SessionCours");
 
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("Backend.business.DataAccess.Models.Permission", b =>
+            modelBuilder.Entity("Backend.business.DataAccess.Models.justificationAbsence", b =>
                 {
-                    b.HasOne("Backend.business.DataAccess.Models.Student", "Student")
-                        .WithMany("Permissions")
-                        .HasForeignKey("StudentUserId");
+                    b.HasOne("Backend.business.DataAccess.Models.Absence", "Absence")
+                        .WithOne("JustificationAbsence")
+                        .HasForeignKey("Backend.business.DataAccess.Models.justificationAbsence", "AbsenceId");
 
-                    b.Navigation("Student");
+                    b.HasOne("Backend.business.DataAccess.Models.Student", "Students")
+                        .WithMany("justificationAbsence")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Absence");
+
+                    b.Navigation("Students");
                 });
 
-            modelBuilder.Entity("Backend.business.DataAccess.Models.SessionCours", b =>
+            modelBuilder.Entity("Backend.business.DataAccess.Models.MatterTeacher", b =>
                 {
                     b.HasOne("Backend.business.DataAccess.Models.Matters", "Matters")
-                        .WithMany("SessionCours")
-                        .HasForeignKey("MattersMatterId");
+                        .WithMany("MatterTeachers")
+                        .HasForeignKey("MatterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("Backend.business.DataAccess.Models.Teacher", "Teacher")
-                        .WithMany("SessionCours")
+                    b.HasOne("Backend.business.DataAccess.Models.Teacher", "Teachers")
+                        .WithMany("MatterTeachers")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Matters");
 
-                    b.Navigation("Teacher");
+                    b.Navigation("Teachers");
+                });
+
+            modelBuilder.Entity("Backend.business.DataAccess.Models.Permission", b =>
+                {
+                    b.HasOne("Backend.business.DataAccess.Models.Student", "Student")
+                        .WithMany("Permissions")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("Backend.business.DataAccess.Models.SessionCours", b =>
+                {
+                    b.HasOne("Backend.business.DataAccess.Models.MatterTeacher", "MatterTeacher")
+                        .WithMany("SessionCours")
+                        .HasForeignKey("MatterTeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MatterTeacher");
                 });
 
             modelBuilder.Entity("Backend.business.DataAccess.Models.Users", b =>
@@ -301,7 +374,17 @@ namespace Backend.business.DataAccess.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Backend.business.DataAccess.Models.Absence", b =>
+                {
+                    b.Navigation("JustificationAbsence");
+                });
+
             modelBuilder.Entity("Backend.business.DataAccess.Models.Matters", b =>
+                {
+                    b.Navigation("MatterTeachers");
+                });
+
+            modelBuilder.Entity("Backend.business.DataAccess.Models.MatterTeacher", b =>
                 {
                     b.Navigation("SessionCours");
                 });
@@ -321,11 +404,13 @@ namespace Backend.business.DataAccess.Migrations
                     b.Navigation("Absences");
 
                     b.Navigation("Permissions");
+
+                    b.Navigation("justificationAbsence");
                 });
 
             modelBuilder.Entity("Backend.business.DataAccess.Models.Teacher", b =>
                 {
-                    b.Navigation("SessionCours");
+                    b.Navigation("MatterTeachers");
                 });
 #pragma warning restore 612, 618
         }

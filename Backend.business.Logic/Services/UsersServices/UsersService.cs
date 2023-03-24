@@ -1,27 +1,43 @@
 ﻿using Backend.business.DataAccess.Data;
 using Backend.business.DataAccess.Models;
+using Backend.business.Logic.ModelsImage;
+using BCrypt.Net;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Backend.business.Logic.Services.UsersServices
 {
     public class UsersService
     {
-        private ManagementPresenceDbContext? ManagementPresenceDbContext;
+        private presenceManagementDbContext? ManagementPresenceDbContext;
 
-        public UsersService(ManagementPresenceDbContext dataDbContext) 
+        public UsersService(presenceManagementDbContext dataDbContext) 
         {
             ManagementPresenceDbContext = dataDbContext;
         }
 
 
-        public IEnumerable<Users> GetAllUsers()
-        {
-            return ManagementPresenceDbContext.Users.ToList();
-        }
 
-        public Users GetUsersById(int id)
+        public async Task<IEnumerable<Users>> GetAllUsersAsync()
         {
-            Users userById = ManagementPresenceDbContext.Users.Where(pers => pers.UserId == id).FirstOrDefault();
 
+            List<Users> users = ManagementPresenceDbContext.Users.Select(users => new Users()
+            {
+                UserId = users.UserId,
+                UsersLname = users.UsersLname,
+                UsersFname = users.UsersFname,
+                UsersGender = users.UsersGender,
+                UsersEmail = users.UsersEmail,
+                UsersPassword = users.UsersPassword,
+                RoleId = users.RoleId,
+            }).ToList();
+
+            return await Task.FromResult(users);
+        } 
+
+        public async Task<Users> GetUserByIdAsync(int id)
+        {
+            Users userById = await ManagementPresenceDbContext.Users.FindAsync(id);
             if (userById == null)
             {
                 return null;
@@ -31,61 +47,124 @@ namespace Backend.business.Logic.Services.UsersServices
         }
 
 
-        public Users? AddUser(Users user)
+
+        public async Task<Users> CreateUserAsync(ImagePost UsersImages)
         {
-            var Tuser = ManagementPresenceDbContext.Add(user);
-            if (Tuser != null)
+            Users users = new Users();
+            Student student = new Student();
+            Admin admin = new Admin();
+            Teacher teacher = new Teacher();
+
+
+            if (UsersImages != null)
             {
-                ManagementPresenceDbContext.SaveChanges();
-                return Tuser.Entity;
-            }
-            return null;
-        }
-
-
-        public Users? UserUpdate(Users Xuser)
-        {
-            var user = ManagementPresenceDbContext.Users.Update(Xuser);
-
-            if (user != null)
-            {
-                Users Yuser = new Users();
-                Yuser.RoleId = Xuser.RoleId;
-                Yuser.UsersLname = Xuser.UsersLname;
-                Yuser.UsersFname = Xuser.UsersFname;
-                Yuser.UsersEmail = Xuser.UsersEmail;
-                Yuser.UsersGender = Xuser.UsersGender;
-                Yuser.UsersPassword = Xuser.UsersPassword;
-                ManagementPresenceDbContext.Users.Update(Xuser);
-                ManagementPresenceDbContext.SaveChanges();
-                return Xuser;
-            }
-
-            return null;
-
-        }
-
-        public bool UserDelete(int id)
-        {
-            Users Xuser = GetUsersById(id);
-            if (Xuser != null)
-            {
-                var Xus = ManagementPresenceDbContext.Users.Remove(Xuser);
-
-                if (Xus != null)
+                if (UsersImages.RoleId == 1)
                 {
-                    ManagementPresenceDbContext.SaveChanges();
-                }
+                    admin.UsersLname = UsersImages.UserLname;
+                    admin.UsersFname = UsersImages.UserFname;
+                    admin.UsersGender = UsersImages.UserGender;
+                    admin.UsersEmail = UsersImages.UserEmail;
+                    admin.UsersPassword = UsersImages.UserPassword;
+                    admin.RoleId = UsersImages.RoleId;
+                    ManagementPresenceDbContext.Add(admin);
+                    await ManagementPresenceDbContext.SaveChangesAsync();
+                    return admin;
 
-                return false;
+                }
+                else if (UsersImages.RoleId == 2)
+                {
+                    teacher.UsersLname = UsersImages.UserLname;
+                    teacher.UsersFname = UsersImages.UserFname;
+                    teacher.UsersGender = UsersImages.UserGender;
+                    teacher.UsersEmail = UsersImages.UserEmail;
+                    teacher.UsersPassword = UsersImages.UserPassword;
+                    teacher.RoleId = UsersImages.RoleId;
+                    ManagementPresenceDbContext.Add(teacher);
+                    await ManagementPresenceDbContext.SaveChangesAsync();
+                    return teacher;
+                }
+                else if (UsersImages.RoleId == 3)
+                {
+                    student.UsersLname = UsersImages.UserLname;
+                    student.UsersFname = UsersImages.UserFname;
+                    student.UsersGender = UsersImages.UserGender;
+                    student.UsersEmail = UsersImages.UserEmail;
+                    student.UsersPassword = UsersImages.UserPassword;
+                    student.RoleId = UsersImages.RoleId;
+                    ManagementPresenceDbContext.Add(student);
+                    await ManagementPresenceDbContext.SaveChangesAsync();
+                    return student;
+
+                }
+                return users;
             }
-            else
-            {
-                throw new NotImplementedException();
-            }
+            return users;
 
         }
 
+
+        public async Task<Users> UpdateUserAsync(ImagePost UsersImages)
+        {
+            Users user = new Users();
+            Student student = new Student();
+            Admin admin = new Admin();
+            Teacher teacher = new Teacher();
+
+            if (UsersImages != null)
+            {
+                if (UsersImages.RoleId == 1)
+                {
+                    admin.UsersLname = UsersImages.UserLname;
+                    admin.UsersFname = UsersImages.UserFname;
+                    admin.UsersGender = UsersImages.UserGender;
+                    admin.UsersEmail = UsersImages.UserEmail;
+                    admin.UsersPassword = UsersImages.UserPassword;
+                    admin.RoleId = UsersImages.RoleId;
+                    ManagementPresenceDbContext.Update(admin);
+                    await ManagementPresenceDbContext.SaveChangesAsync();
+                    return admin;
+
+                }
+                else if (UsersImages.RoleId == 2)
+                {
+                    teacher.UsersLname = UsersImages.UserLname;
+                    teacher.UsersFname = UsersImages.UserFname;
+                    teacher.UsersGender = UsersImages.UserGender;
+                    teacher.UsersEmail = UsersImages.UserEmail;
+                    teacher.UsersPassword = UsersImages.UserPassword;
+                    teacher.RoleId = UsersImages.RoleId;
+                    ManagementPresenceDbContext.Update(teacher);
+                    await ManagementPresenceDbContext.SaveChangesAsync();
+                    return teacher;
+                }
+                else if (UsersImages.RoleId == 3)
+                {
+                    student.UsersLname = UsersImages.UserLname;
+                    student.UsersFname = UsersImages.UserFname;
+                    student.UsersGender = UsersImages.UserGender;
+                    student.UsersEmail = UsersImages.UserEmail;
+                    student.UsersPassword = UsersImages.UserPassword;
+                    student.RoleId = UsersImages.RoleId;
+                    ManagementPresenceDbContext.Update(student);
+                    await ManagementPresenceDbContext.SaveChangesAsync();
+                    return student;
+
+                }
+                return user;
+            }
+            return user;
+        }
+
+
+        public async Task<bool> DeleteUserAsync(int id)
+        {
+            var user = await GetUserByIdAsync(id);
+            if (user == null)
+                return false;
+            ManagementPresenceDbContext.Remove(user);
+            await ManagementPresenceDbContext.SaveChangesAsync();
+            return true;
+        }
 
     }
 }

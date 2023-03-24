@@ -1,91 +1,77 @@
 ﻿using Backend.business.DataAccess.Data;
 using Backend.business.DataAccess.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Backend.business.Logic.ModelsImage;
+
 
 namespace Backend.business.Logic.Services.RoleServices
 {
     public class RoleService
     {
-        private ManagementPresenceDbContext? ManagementPresenceDbContext;
-        public RoleService(ManagementPresenceDbContext dataDbContext)
+        private presenceManagementDbContext? ManagementPresenceDbContext;
+        public RoleService(presenceManagementDbContext dataDbContext)
         {
             ManagementPresenceDbContext = dataDbContext;
         }
 
 
 
-        public IEnumerable<Role> GetAllRoles()
+        public async Task<IEnumerable<Role>> GetAllRolesAsync()
         {
-            return ManagementPresenceDbContext.Roles.ToList();
+            List<Role> roles = ManagementPresenceDbContext.Roles.Select(ro => new Role()
+            {
+                RoleId = ro.RoleId,
+                RoleName = ro.RoleName
+            }
+            ).ToList();
+            return await Task.FromResult(roles);
+        }
+
+        public async Task<Role?> GetRoleByIdAsync(int id)
+        {
+            return await Task.FromResult(ManagementPresenceDbContext.Roles.Where(r => r.RoleId == id).FirstOrDefault());
         }
 
 
-        public Role GetRoleById(int id)
+        public async Task<Role> CreateRoleAsync(RolesImage RolesImages)
         {
-            var roleById = ManagementPresenceDbContext.Roles.Where(role => role.RoleId == id).FirstOrDefault();
+            Role role = new Role();
 
-            if (roleById == null)
+            if (RolesImages != null)
             {
-                return null;
+                role.RoleName = RolesImages.RoleName;
+                ManagementPresenceDbContext.Add(role);
+                await ManagementPresenceDbContext.SaveChangesAsync();
+                return role;
             }
 
-            return roleById;
+            return role;
         }
-
-
-        public Role? AddRole(Role role)
+        public async Task<Role> UpdateRoleAsync(RolesImage RolesImages)
         {
-            var Trole = ManagementPresenceDbContext.Add(role);
-            if (Trole != null)
+            Role role = new Role();
+
+            if (RolesImages != null)
             {
-                ManagementPresenceDbContext.SaveChanges();
-                return Trole.Entity;
-            }
-            return null;
-        }
-
-
-        public Role? RoleUpdate(Role Xrole) { 
-            var role = ManagementPresenceDbContext.Roles.Update(Xrole);
-
-            if (role != null)
-            {
-                Role Yrole = new Role();
-                Yrole.RoleId = Xrole.RoleId;
-                Yrole.RoleName = Xrole.RoleName;
-                ManagementPresenceDbContext.Roles.Update(Xrole);
-                ManagementPresenceDbContext.SaveChanges();
-                return Xrole;
+                role.RoleId = RolesImages.RoleId;
+                role.RoleName = RolesImages.RoleName;
+                ManagementPresenceDbContext.Update(role);
+                await ManagementPresenceDbContext.SaveChangesAsync();
+                return role;
             }
 
-            return null;
-
+            return role;
         }
 
-        public bool RoleDelete(int id)
+        public async Task<bool> DeleteRoleAsync(int id)
         {
-            Role Xrole = GetRoleById(id);
-            if (Xrole != null)
-            {
-                var Xro = ManagementPresenceDbContext.Roles.Remove(Xrole);
-
-                if (Xro != null)
-                {
-                    ManagementPresenceDbContext.SaveChanges();
-                }
-
+            var role = await GetRoleByIdAsync(id);
+            if (role == null)
                 return false;
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-
+            ManagementPresenceDbContext.Remove(role);
+            await ManagementPresenceDbContext.SaveChangesAsync();
+            return true;
         }
 
     }
+
 }

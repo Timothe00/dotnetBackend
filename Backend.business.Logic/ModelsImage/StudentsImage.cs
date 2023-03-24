@@ -1,12 +1,14 @@
-﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Backend.business.DataAccess.Models
+namespace Backend.business.Logic.ModelsImage
 {
-    public class Users
+    public class StudentsImage
     {
-        public int UserId { get; set; }
+        public int StudentsId { get; set; }
         public int RoleId { get; set; }
-        public Role? Role { get; set; } 
         public string? UsersLname { get; set; }
         public string? UsersFname { get; set; }
         public string? UsersGender { get; set; }
