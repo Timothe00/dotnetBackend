@@ -1,0 +1,21 @@
+
+.intro {
+  height: 100%;
+  margin-top: 100px;
+}
+
+table td,
+table th {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.card {
+  border-radius: .5rem;
+}
+
+
+.btx{
+  margin-top: 25px;
+}

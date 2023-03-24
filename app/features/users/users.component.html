@@ -1,0 +1,17 @@
+<div class="container-fluid g-0">
+    <app-header (sideNavToggled)="sideNavStatus= $event;"></app-header>
+    <main>
+      <app-side-nav [sideNavStatus]="sideNavStatus" [ngClass]="{'app-side-nav': sideNavStatus}"></app-side-nav>
+      <div class="mcw">
+        <div class="cv">
+          <div>
+          <div class="inbox">
+            <div class="inbox-sb">
+              <router-outlet></router-outlet>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </main>
+</div>

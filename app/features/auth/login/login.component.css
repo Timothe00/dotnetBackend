@@ -1,0 +1,39 @@
+   a{
+    text-decoration:none !important;
+    }
+    h1,h2,h3{
+    font-family: 'Kaushan Script', cursive;
+    }
+
+    .myform{
+   position: relative;
+   display: -ms-flexbox;
+   display: flex;
+   padding: 1rem;
+   -ms-flex-direction: column;
+   flex-direction: column;
+   width: 100%;
+   pointer-events: auto;
+   background-color: #fff;
+   background-clip: padding-box;
+   border: 1px solid rgba(226, 226, 226, 0.2);
+   border-radius: 1.1rem;
+   outline: 0;
+   max-width: 500px;
+    }
+
+    .mybtn{
+     border-radius:40px;
+     width: 180px;
+     margin-top: 25px;
+     text-transform:uppercase;
+    }
+
+    .ctx{
+        margin-top: 15% !important;
+    }
+   
+
+     /* form .error {
+    color: #ff0000;
+    } */
