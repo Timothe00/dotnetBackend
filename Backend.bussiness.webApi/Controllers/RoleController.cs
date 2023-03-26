@@ -18,7 +18,7 @@ namespace Backend.business.webApi.Controllers
         private readonly presenceManagementDbContext presenceManagementDbContext;
         private RoleService RoleServices;
 
-        public RoleController(presenceManagementDbContext? dbContext, RoleService roleServices)
+        public RoleController(presenceManagementDbContext dbContext, RoleService roleServices)
         {
             presenceManagementDbContext = dbContext;
             RoleServices = roleServices;

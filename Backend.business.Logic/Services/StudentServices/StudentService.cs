@@ -10,7 +10,7 @@ namespace Backend.business.Logic.Services.StudentServices
     public class StudentService
     {
 
-        private presenceManagementDbContext? ManagementPresenceDbContext;
+        private presenceManagementDbContext ManagementPresenceDbContext;
 
         public StudentService(presenceManagementDbContext dataDbContext)
         {
@@ -33,15 +33,10 @@ namespace Backend.business.Logic.Services.StudentServices
         }
 
 
-
-
-
         public async Task<Student?> GetStudentIdAsync(int id)
         {
             return await Task.FromResult(ManagementPresenceDbContext.Students.Where(r => r.UserId == id).FirstOrDefault());
         }
-
-
 
 
         public async Task<Student> CreateStudentAsync(StudentsImage StudentsImages)
@@ -56,7 +51,7 @@ namespace Backend.business.Logic.Services.StudentServices
                 student.UsersGender = StudentsImages.UsersGender;
                 student.UsersEmail = StudentsImages.UsersEmail;
                 student.UsersPassword = StudentsImages.UsersPassword;
-                student.RoleId = 2;
+                student.RoleId = 3;
                 ManagementPresenceDbContext.Add(student);
                 await ManagementPresenceDbContext.SaveChangesAsync();
                 return student;
@@ -78,7 +73,7 @@ namespace Backend.business.Logic.Services.StudentServices
                 student.UsersGender = StudentsImages.UsersGender;
                 student.UsersPassword = StudentsImages.UsersPassword;
 
-                student.RoleId = 2;
+                student.RoleId = 3;
                 ManagementPresenceDbContext.UpdateRange(student);
                 await ManagementPresenceDbContext.SaveChangesAsync();
 

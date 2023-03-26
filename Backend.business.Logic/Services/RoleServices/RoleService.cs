@@ -7,7 +7,7 @@ namespace Backend.business.Logic.Services.RoleServices
 {
     public class RoleService
     {
-        private presenceManagementDbContext? ManagementPresenceDbContext;
+        private presenceManagementDbContext ManagementPresenceDbContext;
         public RoleService(presenceManagementDbContext dataDbContext)
         {
             ManagementPresenceDbContext = dataDbContext;
@@ -66,7 +66,7 @@ namespace Backend.business.Logic.Services.RoleServices
         {
             var role = await GetRoleByIdAsync(id);
             if (role == null)
-                return false;
+            return false;
             ManagementPresenceDbContext.Remove(role);
             await ManagementPresenceDbContext.SaveChangesAsync();
             return true;

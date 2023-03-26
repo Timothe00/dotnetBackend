@@ -19,7 +19,7 @@ namespace Backend.business.webApi.Controllers
         private readonly presenceManagementDbContext presenceManagementDbContext;
         private MatersService MatersService;
 
-        public MattersController(presenceManagementDbContext? dbContext, MatersService matersService)
+        public MattersController(presenceManagementDbContext dbContext, MatersService matersService)
         {
             presenceManagementDbContext = dbContext;
             MatersService = matersService;

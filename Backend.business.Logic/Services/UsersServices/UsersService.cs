@@ -9,7 +9,7 @@ namespace Backend.business.Logic.Services.UsersServices
 {
     public class UsersService
     {
-        private presenceManagementDbContext? ManagementPresenceDbContext;
+        private presenceManagementDbContext ManagementPresenceDbContext;
 
         public UsersService(presenceManagementDbContext dataDbContext) 
         {
@@ -35,7 +35,7 @@ namespace Backend.business.Logic.Services.UsersServices
             return await Task.FromResult(users);
         } 
 
-        public async Task<Users> GetUserByIdAsync(int id)
+        public async Task<Users?> GetUserByIdAsync(int id)
         {
             Users userById = await ManagementPresenceDbContext.Users.FindAsync(id);
             if (userById == null)

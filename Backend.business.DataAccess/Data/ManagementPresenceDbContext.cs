@@ -11,7 +11,7 @@ namespace Backend.business.DataAccess.Data
 
     public class presenceManagementDbContext : DbContext
     {
-        public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<Users>? Users { get; set; }
         public virtual DbSet<Absence>? Absences { get; set; }
         public virtual DbSet<Admin>? Admins { get; set; }
         public virtual DbSet<Matters>? Matters { get; set; }
@@ -19,8 +19,8 @@ namespace Backend.business.DataAccess.Data
         public virtual DbSet<SessionCours>? SessionCours { get; set; }
         public virtual DbSet<Student>? Students { get; set; }
         public virtual DbSet<Teacher>? Teachers { get; set; }
-        public virtual DbSet<justificationAbsence> justificationAbsences { get; set; }
-        public virtual DbSet<MatterTeacher> MatterTeachers  { get; set; }
+        public virtual DbSet<justificationAbsence>? justificationAbsences { get; set; }
+        public virtual DbSet<MatterTeacher>? MatterTeachers  { get; set; }
 
         public presenceManagementDbContext()
         {
