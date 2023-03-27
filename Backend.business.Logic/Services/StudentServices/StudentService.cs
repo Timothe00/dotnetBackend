@@ -50,7 +50,7 @@ namespace Backend.business.Logic.Services.StudentServices
                 student.UsersFname = StudentsImages.UsersFname;
                 student.UsersGender = StudentsImages.UsersGender;
                 student.UsersEmail = StudentsImages.UsersEmail;
-                student.UsersPassword = StudentsImages.UsersPassword;
+                student.UsersPassword = BCrypt.Net.BCrypt.HashPassword(StudentsImages.UsersPassword);
                 student.RoleId = 3;
                 ManagementPresenceDbContext.Add(student);
                 await ManagementPresenceDbContext.SaveChangesAsync();

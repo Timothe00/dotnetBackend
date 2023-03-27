@@ -1,4 +1,5 @@
 using Backend.business.DataAccess.Data;
+using Backend.business.Logic.Services.AdminServices;
 using Backend.business.Logic.Services.MatersServices;
 using Backend.business.Logic.Services.RoleServices;
 using Backend.business.Logic.Services.StudentServices;
@@ -32,6 +33,7 @@ builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<MatersService>();
 builder.Services.AddScoped<StudentService>();
 builder.Services.AddScoped<TeachersService>();
+builder.Services.AddScoped<AdminService>();
 //builder.Services.AddScoped<IUsersService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
