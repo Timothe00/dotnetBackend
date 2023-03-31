@@ -7,7 +7,7 @@ using System;
 
 namespace Backend.business.Logic.Services.UsersServices
 {
-    public class UsersService
+    public class UsersService : IUsersService
     {
         private presenceManagementDbContext ManagementPresenceDbContext;
 
@@ -37,7 +37,7 @@ namespace Backend.business.Logic.Services.UsersServices
 
         public async Task<Users?> GetUserByIdAsync(int id)
         {
-            Users userById = await ManagementPresenceDbContext.Users.FindAsync(id);
+            Users? userById = await ManagementPresenceDbContext.Users.FindAsync(id);
             if (userById == null)
             {
                 return null;
@@ -165,6 +165,7 @@ namespace Backend.business.Logic.Services.UsersServices
             await ManagementPresenceDbContext.SaveChangesAsync();
             return true;
         }
+
 
     }
 }

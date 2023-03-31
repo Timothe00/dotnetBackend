@@ -5,7 +5,7 @@ using Backend.business.Logic.ModelsImage;
 
 namespace Backend.business.Logic.Services.RoleServices
 {
-    public class RoleService
+    public class RoleService : IRoleServices
     {
         private presenceManagementDbContext ManagementPresenceDbContext;
         public RoleService(presenceManagementDbContext dataDbContext)

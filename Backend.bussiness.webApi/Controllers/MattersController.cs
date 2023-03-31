@@ -2,6 +2,7 @@
 using Backend.business.DataAccess.Models;
 using Backend.business.Logic.ModelsImage;
 using Backend.business.Logic.Services.MatersServices;
+using Backend.business.Logic.Services.MattersServices;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -16,13 +17,12 @@ namespace Backend.business.webApi.Controllers
     public class MattersController : ControllerBase
     {
 
-        private readonly presenceManagementDbContext presenceManagementDbContext;
-        private MatersService MatersService;
 
-        public MattersController(presenceManagementDbContext dbContext, MatersService matersService)
+        private readonly IMattersServices _matterService;
+
+        public MattersController(IMattersServices matterService)
         {
-            presenceManagementDbContext = dbContext;
-            MatersService = matersService;
+            _matterService = matterService;
         }
 
 
@@ -31,7 +31,7 @@ namespace Backend.business.webApi.Controllers
 
         public async Task<IActionResult> GetAsync()
         {
-            var m = await MatersService.GetMattersAsync();
+            var m = await _matterService.GetMattersAsync();
             return Ok(m);
         }
 
@@ -39,7 +39,7 @@ namespace Backend.business.webApi.Controllers
         [HttpGet("{id}")]
        public async Task<IActionResult> GetMatterByIdAsync(int id)
         {
-            var mat = await MatersService.GetMatterIdAsync(id);
+            var mat = await _matterService.GetMatterIdAsync(id);
 
             if (mat == null)
             {
@@ -60,7 +60,7 @@ namespace Backend.business.webApi.Controllers
             }
             else
             {
-                return Ok(MatersService.CreateMatterAsync(matter));
+                return Ok(_matterService.CreateMatterAsync(matter));
             }
 
         }
@@ -75,7 +75,7 @@ namespace Backend.business.webApi.Controllers
             }
             else
             {
-                return Ok(MatersService.UpdateMatterAsync(matter));
+                return Ok(_matterService.UpdateMatterAsync(matter));
             }
         }
 
@@ -85,7 +85,7 @@ namespace Backend.business.webApi.Controllers
         [HttpDelete("{id}")]
         public Task<bool> Delete(int id)
         {
-            return MatersService.DeleteMatterAsync(id);
+            return _matterService.DeleteMatterAsync(id);
         }
     }
 }

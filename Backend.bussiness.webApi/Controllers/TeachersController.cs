@@ -10,13 +10,11 @@ namespace Backend.bussiness.webApi.Controllers
     [Route("api/[controller]")]
     public class TeachersController : ControllerBase
     {
-        private readonly presenceManagementDbContext presenceManagementDbContext;
-        private TeachersService TeachersServices;
+        private readonly ITeachersServices _iteachersServices;
 
-        public TeachersController(presenceManagementDbContext dbContext, TeachersService teachersService)
+        public TeachersController(ITeachersServices iteachersServices)
         {
-            presenceManagementDbContext = dbContext;
-            TeachersServices = teachersService;
+            _iteachersServices = iteachersServices;
         }
 
 
@@ -26,7 +24,7 @@ namespace Backend.bussiness.webApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            var teach = await TeachersServices.GetTeachersAsync();
+            var teach = await _iteachersServices.GetTeachersAsync();
             return Ok(teach);
         }
 
@@ -37,7 +35,7 @@ namespace Backend.bussiness.webApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTeacherByIdAsync(int id)
         {
-            var teach = await TeachersServices.GetTeacherIdAsync(id);
+            var teach = await _iteachersServices.GetTeacherIdAsync(id);
 
             if (teach == null)
             {
@@ -60,7 +58,7 @@ namespace Backend.bussiness.webApi.Controllers
             }
             else
             {
-                return Ok(TeachersServices.CreateTeacherAsync(teacher));
+                return Ok(_iteachersServices.CreateTeacherAsync(teacher));
             }
 
         }
@@ -77,7 +75,7 @@ namespace Backend.bussiness.webApi.Controllers
             }
             else
             {
-                return Ok(TeachersServices.UpdateTeacherAsync(teacher, id));
+                return Ok(_iteachersServices.UpdateTeacherAsync(teacher, id));
             }
         }
 
@@ -85,7 +83,7 @@ namespace Backend.bussiness.webApi.Controllers
         [HttpDelete("{id}")]
         public Task<bool> Delete(int id)
         {
-            return TeachersServices.DeleteTeacherAsync(id);
+            return _iteachersServices.DeleteTeacherAsync(id);
         }
     }
     

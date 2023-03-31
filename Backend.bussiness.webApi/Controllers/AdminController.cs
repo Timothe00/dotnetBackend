@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Backend.business.DataAccess.Data;
 using Backend.business.Logic.ModelsImage;
 using Backend.business.Logic.Services.AdminServices;
 using Microsoft.AspNetCore.Mvc;
+
+
+
+
+
 
 namespace Backend.bussiness.webApi.Controllers
 {
@@ -13,13 +13,11 @@ namespace Backend.bussiness.webApi.Controllers
     [Route("api/[controller]")]
     public class AdminController : ControllerBase
     {
-        private readonly presenceManagementDbContext presenceManagementDbContext;
-        private AdminService AdminServices;
+        private readonly IAdminServices _iadminServices;
 
-        public AdminController(presenceManagementDbContext dbContext, AdminService adminServices)
+        public AdminController(IAdminServices iadminServices)
         {
-            presenceManagementDbContext = dbContext;
-            AdminServices = adminServices;
+            _iadminServices = iadminServices;
         }
 
 
@@ -29,7 +27,7 @@ namespace Backend.bussiness.webApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            var admin = await AdminServices.GetAdminsAsync();
+            var admin = await _iadminServices.GetAdminsAsync();
             return Ok(admin);
         }
 
@@ -40,7 +38,7 @@ namespace Backend.bussiness.webApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAdminByIdAsync(int id)
         {
-            var admin = await AdminServices.GetAdminIdAsync(id);
+            var admin = await _iadminServices.GetAdminIdAsync(id);
 
             if (admin == null)
             {
@@ -63,7 +61,7 @@ namespace Backend.bussiness.webApi.Controllers
             }
             else
             {
-                return Ok(AdminServices.CreateAdminAsync(admin));
+                return Ok(_iadminServices.CreateAdminAsync(admin));
             }
 
         }
@@ -80,7 +78,7 @@ namespace Backend.bussiness.webApi.Controllers
             }
             else
             {
-                return Ok(AdminServices.UpdateAdminAsync(admin, id));
+                return Ok(_iadminServices.UpdateAdminAsync(admin, id));
             }
         }
 
@@ -88,7 +86,7 @@ namespace Backend.bussiness.webApi.Controllers
         [HttpDelete("{id}")]
         public Task<bool> Delete(int id)
         {
-            return AdminServices.DeleteAdminAsync(id);
+            return _iadminServices.DeleteAdminAsync(id);
         }
     }
 }

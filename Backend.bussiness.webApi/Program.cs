@@ -1,25 +1,19 @@
 using Backend.business.DataAccess.Data;
 using Backend.business.Logic.Services.AdminServices;
+using Backend.business.Logic.Services.AuthServices;
 using Backend.business.Logic.Services.MatersServices;
+using Backend.business.Logic.Services.MattersServices;
 using Backend.business.Logic.Services.RoleServices;
 using Backend.business.Logic.Services.StudentServices;
 using Backend.business.Logic.Services.TeachersServices;
 using Backend.business.Logic.Services.UsersServices;
+using Backend.bussiness.webApi.Controllers;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-string? corsOrigin = builder.Configuration.GetSection("CorsOrigin").Get<string>();
 
-builder.Services.AddCors(o =>
-{
-    o.AddPolicy(
-        name: "MarkerApi",
-        p => p.WithOrigins(corsOrigin)
-        .AllowAnyHeader()
-        .AllowAnyMethod());
-});
 
 // Add services to the container.
 
@@ -28,13 +22,29 @@ builder.Services.AddDbContext<presenceManagementDbContext>(Option => {
     Option.UseSqlServer(builder.Configuration.GetConnectionString("LinkCs"));
 });
 
-builder.Services.AddScoped<UsersService>();
-builder.Services.AddScoped<RoleService>();
-builder.Services.AddScoped<MatersService>();
-builder.Services.AddScoped<StudentService>();
-builder.Services.AddScoped<TeachersService>();
-builder.Services.AddScoped<AdminService>();
-//builder.Services.AddScoped<IUsersService>();
+
+//Gesttion des erreurs d'entête CORS
+string? corsOrigin = builder.Configuration.GetSection("CorsOrigin").Get<string>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
+
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IUsersService,UsersService>();
+builder.Services.AddScoped<IRoleServices,RoleService>();
+builder.Services.AddScoped<ITeachersServices, TeachersService>();
+builder.Services.AddScoped<IMattersServices,MatersService>();
+builder.Services.AddScoped<IStudentServices,StudentService>();
+builder.Services.AddScoped<IAdminServices,AdminService>();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -50,6 +60,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 

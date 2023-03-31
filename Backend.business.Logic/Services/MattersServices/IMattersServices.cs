@@ -10,8 +10,10 @@ namespace Backend.business.Logic.Services.MattersServices
 {
     public interface IMattersServices
     {
-        IEnumerable<Matters> GetMattersAsync();
-        Task<Matters?> GetMatterAsync(int id);
+        Task<IEnumerable<Matters>> GetMattersAsync();
+        Task<Matters?> GetMatterIdAsync(int id);
+
+        Task<Matters> CreateMatterAsync(MattersImage MattersImages);
         Task<Matters> UpdateMatterAsync(MattersImage MattersImages);
         Task<bool> DeleteMatterAsync(int id);
     }

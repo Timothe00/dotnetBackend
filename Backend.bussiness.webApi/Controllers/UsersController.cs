@@ -16,13 +16,11 @@ namespace Backend.business.webApi.Controllers
     public class UsersController : ControllerBase
     {
 
-        private readonly presenceManagementDbContext presenceManagementDbContext;
-        private UsersService UsersServices;
+        private readonly IUsersService _iusersService;
 
-        public UsersController(presenceManagementDbContext dbContext, UsersService usersService)
+        public UsersController(IUsersService iusersService)
         {
-            presenceManagementDbContext = dbContext;
-            UsersServices = usersService;
+            _iusersService = iusersService;
         }
 
 
@@ -31,7 +29,7 @@ namespace Backend.business.webApi.Controllers
 
         public async Task<IActionResult> GetAsync()
         {
-            var users = await UsersServices.GetAllUsersAsync();
+            var users = await _iusersService.GetAllUsersAsync();
             return Ok(users);
         }
 
@@ -39,7 +37,7 @@ namespace Backend.business.webApi.Controllers
         [HttpGet("{id}")]
        public async Task<IActionResult> GetUserByIdAsync(int id)
         {
-            var user = await UsersServices.GetUserByIdAsync(id);
+            var user = await _iusersService.GetUserByIdAsync(id);
 
             if (user == null)
             {
@@ -60,7 +58,7 @@ namespace Backend.business.webApi.Controllers
             }
             else
             {
-                return Ok(UsersServices.CreateUserAsync(user));
+                return Ok(_iusersService.CreateUserAsync(user));
             }
 
         }
@@ -75,7 +73,7 @@ namespace Backend.business.webApi.Controllers
             }
             else
             {
-                return Ok(UsersServices.UpdateUserAsync(Xuser));
+                return Ok(_iusersService.UpdateUserAsync(Xuser));
             }
         }
 
@@ -83,7 +81,7 @@ namespace Backend.business.webApi.Controllers
         [HttpDelete("{id}")]
         public Task<bool> Delete(int id)
         {
-            return UsersServices.DeleteUserAsync(id);
+            return _iusersService.DeleteUserAsync(id);
         }
     }
 }

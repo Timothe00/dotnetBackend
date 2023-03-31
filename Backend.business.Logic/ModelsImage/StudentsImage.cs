@@ -7,8 +7,8 @@ namespace Backend.business.Logic.ModelsImage
 {
     public class StudentsImage
     {
-        public int StudentsId { get; set; }
-        public int RoleId { get; set; }
+        //public int StudentsId { get; set; }
+        //public int RoleId { get; set; }
         public string? UsersLname { get; set; }
         public string? UsersFname { get; set; }
         public string? UsersGender { get; set; }

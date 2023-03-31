@@ -1,4 +1,5 @@
 ﻿using Backend.business.DataAccess.Models;
+using Backend.business.Logic.ModelsImage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace Backend.business.Logic.Services.RoleServices
 {
     public interface IRoleServices
     {
-        IEnumerable<Role> GetAllRoles();
-        Role GetRoleById(int id);
-        Role? AddRole(Role role);
-        Role? RoleUpdate(Role Xrole);
-        bool RoleDelete(int id);
+        Task<IEnumerable<Role>> GetAllRolesAsync();
+        Task<Role?> GetRoleByIdAsync(int id);
+        Task<Role> CreateRoleAsync(RolesImage RolesImages);
+        Task<Role> UpdateRoleAsync(RolesImage RolesImages);
+        Task<bool> DeleteRoleAsync(int id);
     }
 }

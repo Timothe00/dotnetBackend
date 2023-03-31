@@ -2,10 +2,11 @@
 using Backend.business.DataAccess.Data;
 using Backend.business.DataAccess.Models;
 using Backend.business.Logic.ModelsImage;
+using Backend.business.Logic.Utility;
 
 namespace Backend.business.Logic.Services.AdminServices
 {
-    public class AdminService
+    public class AdminService : IAdminServices
     {
          private presenceManagementDbContext ManagementPresenceDbContext;
 
@@ -70,7 +71,7 @@ namespace Backend.business.Logic.Services.AdminServices
                 admin.UsersLname = adminImages.UsersLname;
                 admin.UsersFname = adminImages.UsersFname;
                 admin.UsersGender = adminImages.UsersGender;
-                admin.UsersEmail = BCrypt.Net.BCrypt.HashPassword(adminImages.UsersEmail);
+                admin.UsersEmail = adminImages.UsersEmail;
                 admin.UsersPassword = adminImages.UsersPassword;
 
                 admin.RoleId = 1;

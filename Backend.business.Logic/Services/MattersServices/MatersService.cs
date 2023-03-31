@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace Backend.business.Logic.Services.MatersServices
 {
-    public class MatersService 
+    public class MatersService : IMattersServices
     {
         private presenceManagementDbContext ManagementPresenceDbContext;
         public MatersService(presenceManagementDbContext dataDbContext) 
@@ -79,9 +79,6 @@ namespace Backend.business.Logic.Services.MatersServices
 
             return matter;
         }
-
-
-
 
 
 

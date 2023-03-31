@@ -1,6 +1,7 @@
 ﻿using Backend.business.DataAccess.Data;
 using Backend.business.DataAccess.Models;
 using Backend.business.Logic.ModelsImage;
+using Backend.business.Logic.Services.AdminServices;
 using Backend.business.Logic.Services.RoleServices;
 using Backend.business.Logic.Services.UsersServices;
 using Microsoft.AspNetCore.Mvc;
@@ -15,13 +16,11 @@ namespace Backend.business.webApi.Controllers
     public class RoleController : ControllerBase
     {
 
-        private readonly presenceManagementDbContext presenceManagementDbContext;
-        private RoleService RoleServices;
+        private readonly IRoleServices _iroleServices;
 
-        public RoleController(presenceManagementDbContext dbContext, RoleService roleServices)
+        public RoleController(IRoleServices iroleServices)
         {
-            presenceManagementDbContext = dbContext;
-            RoleServices = roleServices;
+            _iroleServices = iroleServices;
         }
 
 
@@ -30,7 +29,7 @@ namespace Backend.business.webApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllRoleAsync()
         {
-            var role = await RoleServices.GetAllRolesAsync();
+            var role = await _iroleServices.GetAllRolesAsync();
             return Ok(role);
         }
 
@@ -38,7 +37,7 @@ namespace Backend.business.webApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRoleById(int id)
         {
-            var role = await RoleServices.GetRoleByIdAsync(id);
+            var role = await _iroleServices.GetRoleByIdAsync(id);
 
             if (role == null)
             {
@@ -58,7 +57,7 @@ namespace Backend.business.webApi.Controllers
             }
             else
             {
-                return Ok(RoleServices.CreateRoleAsync(role));
+                return Ok(_iroleServices.CreateRoleAsync(role));
             }
 
         }
@@ -73,7 +72,7 @@ namespace Backend.business.webApi.Controllers
             }
             else
             {
-                return Ok(RoleServices.UpdateRoleAsync(Xrole));
+                return Ok(_iroleServices.UpdateRoleAsync(Xrole));
             }
         }
 
@@ -88,7 +87,7 @@ namespace Backend.business.webApi.Controllers
             }
             else
             {
-                var role = await RoleServices.DeleteRoleAsync(id);
+                var role = await _iroleServices.DeleteRoleAsync(id);
                 return Ok(role);
 
             }

@@ -1,10 +1,10 @@
-using Backend.business.DataAccess.Models;
+/*using Backend.business.DataAccess.Models;
 
 namespace Backend.bussiness.webApi.Controllers
 {
-    public interface IAuthServices
+    public interface IAuthentificationServices
     {
         Users Authenticate(Login Logins);
-        string Token(Users user);
+        //string Token(Users user);
     }
-}
+}*/

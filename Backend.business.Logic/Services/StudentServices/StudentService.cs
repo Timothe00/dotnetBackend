@@ -1,13 +1,12 @@
 ﻿using Backend.business.DataAccess.Data;
 using Backend.business.DataAccess.Models;
 using Backend.business.Logic.ModelsImage;
-using BCrypt.Net;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace Backend.business.Logic.Services.StudentServices
 {
-    public class StudentService
+    public class StudentService : IStudentServices
     {
 
         private presenceManagementDbContext ManagementPresenceDbContext;
@@ -32,7 +31,6 @@ namespace Backend.business.Logic.Services.StudentServices
             return await Task.FromResult(students);
         }
 
-
         public async Task<Student?> GetStudentIdAsync(int id)
         {
             return await Task.FromResult(ManagementPresenceDbContext.Students.Where(r => r.UserId == id).FirstOrDefault());
@@ -48,9 +46,9 @@ namespace Backend.business.Logic.Services.StudentServices
             {
                 student.UsersLname = StudentsImages.UsersLname;
                 student.UsersFname = StudentsImages.UsersFname;
-                student.UsersGender = StudentsImages.UsersGender;
+                student.UsersGender = StudentsImages.UsersGender;  
                 student.UsersEmail = StudentsImages.UsersEmail;
-                student.UsersPassword = BCrypt.Net.BCrypt.HashPassword(StudentsImages.UsersPassword);
+                student.UsersPassword = StudentsImages.UsersPassword; //BCrypt.Net.BCrypt.HashPassword(StudentsImages.UsersPassword);
                 student.RoleId = 3;
                 ManagementPresenceDbContext.Add(student);
                 await ManagementPresenceDbContext.SaveChangesAsync();
@@ -63,7 +61,7 @@ namespace Backend.business.Logic.Services.StudentServices
         public async Task<bool> UpdateStudentAsync(StudentsImage StudentsImages, int id)
         {
 
-            Users? student = await GetStudentIdAsync(id);
+            Student? student = await GetStudentIdAsync(id);
 
             if (StudentsImages != null && student != null)
             {
@@ -71,8 +69,8 @@ namespace Backend.business.Logic.Services.StudentServices
                 student.UsersLname = StudentsImages.UsersLname;
                 student.UsersFname = StudentsImages.UsersFname;
                 student.UsersGender = StudentsImages.UsersGender;
+                student.UsersEmail = StudentsImages.UsersEmail;
                 student.UsersPassword = StudentsImages.UsersPassword;
-
                 student.RoleId = 3;
                 ManagementPresenceDbContext.UpdateRange(student);
                 await ManagementPresenceDbContext.SaveChangesAsync();

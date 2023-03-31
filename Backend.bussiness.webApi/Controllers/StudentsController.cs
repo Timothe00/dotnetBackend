@@ -13,13 +13,11 @@ namespace Backend.business.webApi.Controllers
     public class StudentsController : ControllerBase
     {
 
-        private readonly presenceManagementDbContext presenceManagementDbContext;
-        private StudentService StudentServices;
+        private readonly IStudentServices _istudentServices;
 
-        public StudentsController(presenceManagementDbContext dbContext, StudentService studentServices)
+        public StudentsController(IStudentServices istudentServices)
         {
-            presenceManagementDbContext = dbContext;
-            StudentServices = studentServices;
+            _istudentServices = istudentServices;
         }
 
 
@@ -29,7 +27,7 @@ namespace Backend.business.webApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            var std = await StudentServices.GetStudentsAsync();
+            var std = await _istudentServices.GetStudentsAsync();
             return Ok(std);
         }
 
@@ -40,7 +38,7 @@ namespace Backend.business.webApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetStudentsByIdAsync(int id)
         {
-            var std = await StudentServices.GetStudentIdAsync(id);
+            var std = await _istudentServices.GetStudentIdAsync(id);
 
             if (std == null)
             {
@@ -63,7 +61,7 @@ namespace Backend.business.webApi.Controllers
             }
             else
             {
-                return Ok(StudentServices.CreateStudentAsync(student));
+                return Ok(_istudentServices.CreateStudentAsync(student));
             }
 
         }
@@ -80,7 +78,7 @@ namespace Backend.business.webApi.Controllers
             }
             else
             {
-                return Ok(StudentServices.UpdateStudentAsync(student, id));
+                return Ok(_istudentServices.UpdateStudentAsync(student, id));
             }
         }
 
@@ -88,7 +86,7 @@ namespace Backend.business.webApi.Controllers
         [HttpDelete("{id}")]
         public Task<bool> Delete(int id)
         {
-            return StudentServices.DeleteStudentAsync(id);
+            return _istudentServices.DeleteStudentAsync(id);
         }
     }
 }

@@ -5,12 +5,12 @@ using System.Text;
 using Backend.business.DataAccess.Data;
 using Backend.business.DataAccess.Models;
 using Microsoft.Extensions.Configuration;
-using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
+//using Backend.bussiness.webApi.Controllers;
 
 namespace Backend.business.Logic.Services.AuthServices
 {
-    public class AuthService
+    public class AuthService //: IAuthentificationServices
     {
         private readonly IConfiguration _configuration;
         private readonly presenceManagementDbContext _DbContext;
@@ -22,18 +22,17 @@ namespace Backend.business.Logic.Services.AuthServices
 
         public Users Authenticate(Login Logins)
         {
-            var user = _DbContext.Users.Where(u => u.UsersEmail == Logins.UsersEmail).FirstOrDefault();
+            Users? user = _DbContext.Users
+                             .Where(u => u.UsersEmail == Logins.UsersEmail)
+                             .Where(u => u.UsersPassword == Logins.UsersPassword)
+                             .FirstOrDefault();
             if (user != null)
             {
-                bool isPasswordValid = BCrypt.Net.BCrypt.Verify(Logins.UsersPassword, user.UsersPassword);
-                if (isPasswordValid)
-                {
-                    return user;
-                }
+                return user;
             }
-            return null;
+            throw new Exception("user not found");
         }
-        public string Token(Users user)
+        /*public string Token(Users user)
         {
             string? role = _DbContext.Roles.Where(r => r.RoleId == user.RoleId).Select(role => role.RoleName).FirstOrDefault();
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -51,7 +50,7 @@ namespace Backend.business.Logic.Services.AuthServices
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
             return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        }*/
     }
 
 }

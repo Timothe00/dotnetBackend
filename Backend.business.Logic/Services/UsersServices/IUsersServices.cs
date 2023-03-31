@@ -1,14 +1,16 @@
 ﻿using Backend.business.DataAccess.Models;
-
+using Backend.business.Logic.ModelsImage;
 
 namespace Backend.business.Logic.Services.UsersServices
 {
     public interface IUsersService
     {
-        ICollection<Users> GetAllUsers();
-        Users GetUsersById(int id);
-        Users AddUser(Users user);
-        Users? UserUpdate(Users Xuser);
-        bool UserDelete(int id);
+        Task<IEnumerable<Users>> GetAllUsersAsync();
+        Task<Users?> GetUserByIdAsync(int id);
+
+        Task<Users> CreateUserAsync(ImagePost UsersImages);
+
+        Task<Users> UpdateUserAsync(ImagePost UsersImages);
+        Task<bool> DeleteUserAsync(int id);
     }
 }
