@@ -1,7 +1,9 @@
-import { PresentListService } from './../../../../core/services/adminServices/present-list.service';
+
 import { Component, OnInit } from '@angular/core';
-import { Students } from 'src/app/core/models/Students';
 import { HttpClient } from "@angular/common/http";
+import { PresentListService } from '../../../../core/services/adminServices/present-list.service';
+import { Students } from '../../../../core/models/students';
+
 @Component({
   selector: 'app-present-list',
   templateUrl: './present-list.component.html',
@@ -9,58 +11,24 @@ import { HttpClient } from "@angular/common/http";
 })
 export class PresentListComponent {
     allStudent!: Students[];
-
-    //allStudent: any;
-    isFetching: boolean= false;
-
-    studentData: any;
-    constructor(private http: HttpClient,private presentListService:PresentListService){}
-
-    OnInit(){
-      this.getStudents()
+    constructor(private http: HttpClient,private presentListService:PresentListService){
+      this.fetchStudents()
     }
 
-    // private fetchStudents(){
-    //   this.isFetching =true;
-    //   this.presentListService.fetchStudent().subscribe(([])=>{
-    //     this.allStudent = [];
-    //     this.isFetching = false;
-    //   })
-    // }
+    OnInit(){}
 
-    // fetchStudents(){
-    //   this.presentListService.GetUsers().subscribe({
-    //     next:(data: any)=>{
-         
-    //       this.studentData=data;
-    //       console.log(data)
-    //     },
-    //     error:()=>{
-    //       alert("erreur")
-    //     }
-    //     //console.log(this.declarationData);
-    //   }
-    // )}
-
-    getStudents(){
+    fetchStudents(){
      this.presentListService.getStudent()
      .subscribe({
       next:(res)=>{
         this.allStudent = res;
-        console.log("res");
+        console.log(res);    
+      },
+      error:(err)=>{
+        console.log(err);
+        
       }
      })
     }
-
-    // fetchStudents() {
-    //   this.presentListService.getStudent().subscribe({
-    //     next:(data)=>{
-    //       this.studentData=data;
-    //     },
-    //     error:()=>{
-    //       alert("erreur")
-    //     }
-    //   }
-    // )}
 
 }

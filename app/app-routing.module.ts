@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  {path: "", redirectTo:"users", pathMatch: 'full'},
+  {path: '', redirectTo:"auth/login", pathMatch: 'full'},
   {
     path: 'auth',
     loadChildren: () =>
-      import('./features/auth/auth.module').then((m) => m.AuthModule),
+    import('./features/auth/auth.module').then((m) => m.AuthModule),
   },
   { path: 'users', 
     loadChildren: () => 
