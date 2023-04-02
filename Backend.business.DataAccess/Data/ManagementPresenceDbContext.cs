@@ -17,6 +17,7 @@ namespace Backend.business.DataAccess.Data
         public virtual DbSet<Matters>? Matters { get; set; }
         public virtual DbSet<Role>? Roles { get; set; }
         public virtual DbSet<SessionCours>? SessionCours { get; set; }
+        public virtual DbSet<Permission>? Permissions { get; set; }
         public virtual DbSet<Student>? Students { get; set; }
         public virtual DbSet<Teacher>? Teachers { get; set; }
         public virtual DbSet<justificationAbsence>? justificationAbsences { get; set; }

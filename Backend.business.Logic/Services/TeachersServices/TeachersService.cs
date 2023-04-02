@@ -46,7 +46,7 @@ namespace Backend.business.Logic.Services.TeachersServices
                 teacher.UsersFname = TeacherImages.UsersFname;
                 teacher.UsersGender = TeacherImages.UsersGender;
                 teacher.UsersEmail = TeacherImages.UsersEmail;
-                teacher.UsersPassword = BCrypt.Net.BCrypt.HashPassword(TeacherImages.UsersPassword);
+                teacher.UsersPassword = TeacherImages.UsersPassword;
                 teacher.RoleId = 2;
                 ManagementPresenceDbContext.Add(teacher);
                 await ManagementPresenceDbContext.SaveChangesAsync();

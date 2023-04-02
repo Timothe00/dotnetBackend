@@ -4,13 +4,14 @@ using System.Text;
 
 using Backend.business.DataAccess.Data;
 using Backend.business.DataAccess.Models;
+using Backend.bussiness.webApi.Controllers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 //using Backend.bussiness.webApi.Controllers;
 
 namespace Backend.business.Logic.Services.AuthServices
 {
-    public class AuthService //: IAuthentificationServices
+    public class AuthService : IAuthentificationServices
     {
         private readonly IConfiguration _configuration;
         private readonly presenceManagementDbContext _DbContext;

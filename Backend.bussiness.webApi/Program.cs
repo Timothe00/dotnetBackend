@@ -3,6 +3,7 @@ using Backend.business.Logic.Services.AdminServices;
 using Backend.business.Logic.Services.AuthServices;
 using Backend.business.Logic.Services.MatersServices;
 using Backend.business.Logic.Services.MattersServices;
+using Backend.business.Logic.Services.PermissionServices;
 using Backend.business.Logic.Services.RoleServices;
 using Backend.business.Logic.Services.StudentServices;
 using Backend.business.Logic.Services.TeachersServices;
@@ -23,7 +24,7 @@ builder.Services.AddDbContext<presenceManagementDbContext>(Option => {
 });
 
 
-//Gesttion des erreurs d'entête CORS
+//Gesttion des erreurs d'entï¿½te CORS
 string? corsOrigin = builder.Configuration.GetSection("CorsOrigin").Get<string>();
 
 builder.Services.AddCors(options =>
@@ -37,13 +38,14 @@ builder.Services.AddCors(options =>
 });
 
 
-builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IAuthentificationServices,AuthService>();
 builder.Services.AddScoped<IUsersService,UsersService>();
 builder.Services.AddScoped<IRoleServices,RoleService>();
 builder.Services.AddScoped<ITeachersServices, TeachersService>();
 builder.Services.AddScoped<IMattersServices,MatersService>();
 builder.Services.AddScoped<IStudentServices,StudentService>();
 builder.Services.AddScoped<IAdminServices,AdminService>();
+builder.Services.AddScoped<IPermissionServices,PermissionService>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -12,22 +12,17 @@ namespace Backend.bussiness.webApi.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
-    {
-        private readonly presenceManagementDbContext _presenceManagementDbContext;
-        //private readonly IConfiguration _configuration;
+    {        private readonly IAuthentificationServices _configuration;
         private AuthService _authService;
-        public AuthController(presenceManagementDbContext presenceManagementDbContext, AuthService authService)
+        public AuthController (IAuthentificationServices configuration)
         {
-           // _authService = authService;
-            // _configuration = configuration;
-            _presenceManagementDbContext= presenceManagementDbContext;
-            _authService =  authService;
+             _configuration = configuration;    
         }
 
         [HttpPost]
         public ActionResult Login([FromBody] Login userLogin)
         {
-            var user = _authService.Authenticate(userLogin);
+            var user = _configuration.Authenticate(userLogin);
             if (user != null)
             {
                 //var tokens = _authService.Token(user);
